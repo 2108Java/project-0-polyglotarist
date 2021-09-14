@@ -7,6 +7,7 @@ import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Scanner;
 
 public class Customer {
 	
@@ -23,10 +24,10 @@ public class Customer {
 
 
 	public Customer(String firstname, String lastname, String email, String phone) {
-		this.firstname = firstname;
-		this.lastname = lastname;
-		this.email = email;
-		this.phone = phone;
+		this.setFirstname(firstname);
+		this.setLastname(lastname);
+		this.setEmail(email);
+		this.setPhone(phone);
 	}
 	
 	String server = "localhost";
@@ -42,6 +43,38 @@ public class Customer {
 	}
 	 
 	
+	public String invokeScanner() {
+		Scanner sc = new Scanner(System.in);
+		String userInput = sc.nextLine();
+		return userInput;
+	}
+	
+	public void register() {
+		System.out.println("Please enter your first name: ");
+		
+		this.setFirstname(invokeScanner()); 
+		System.out.println("you entered: "+ this.getFirstname());
+		
+		System.out.println("Please enter your last name: ");
+
+		this.setLastname(invokeScanner()); 
+		System.out.println("you entered: "+ this.getLastname());
+		
+		System.out.println("Please enter your email: ");
+
+		this.setEmail(invokeScanner()); 
+		System.out.println("you entered: "+ this.getEmail());
+
+
+		System.out.println("Please enter your phone number: ");
+
+		this.setPhone(invokeScanner()); 
+		System.out.println("you entered: "+ this.getPhone());
+		
+		
+
+	}
+	
 	public List<Customer> applyForAccount() {
 		
 		List<Customer> customerList = new ArrayList<>();
@@ -54,7 +87,7 @@ public class Customer {
 			
 			ResultSet rs = ps.executeQuery();
 			
-			System.out.println(rs);
+		//	System.out.println(rs);
 			
 			
 			
@@ -98,6 +131,46 @@ public class Customer {
 	
 	public void acceptTransfer() {
 		
+	}
+
+
+	public String getFirstname() {
+		return firstname;
+	}
+
+
+	public void setFirstname(String firstname) {
+		this.firstname = firstname;
+	}
+
+
+	public String getLastname() {
+		return lastname;
+	}
+
+
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
+	}
+
+
+	public String getEmail() {
+		return email;
+	}
+
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+
+	public String getPhone() {
+		return phone;
+	}
+
+
+	public void setPhone(String phone) {
+		this.phone = phone;
 	}
 
 }
