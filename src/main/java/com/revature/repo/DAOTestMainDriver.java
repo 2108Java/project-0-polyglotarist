@@ -1,5 +1,7 @@
 package com.revature.repo;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Scanner;
 
 import com.revature.models.Customer;
@@ -15,7 +17,7 @@ public class DAOTestMainDriver {
 		
 //		Customer[] result = new Customer[10];
 		
-		database.applyForAccount();
+		
 		
 		
 		System.out.println("Welcome to EBank");
@@ -29,6 +31,19 @@ public class DAOTestMainDriver {
 		System.out.println("You selected option: "+userInput);
 		
 		database.register();
+		
+		List<Customer> form = new ArrayList<>();
+		form = database.applyForAccount();
+		
+		for(int i = 0; i < 8; i++) {
+			System.out.println("row number "+ i+1);
+			System.out.println(form.get(i).getFirstname());
+			System.out.println(form.get(i).getLastname());
+			System.out.println(form.get(i).getEmail());
+			System.out.println(form.get(i).getPhone());
+			System.out.println();
+			System.out.println();
+		}
 		
 		
 

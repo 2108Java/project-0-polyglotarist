@@ -75,6 +75,8 @@ public class Customer {
 
 	}
 	
+	
+	
 	public List<Customer> applyForAccount() {
 		
 		List<Customer> customerList = new ArrayList<>();
@@ -110,9 +112,9 @@ public class Customer {
 			e.printStackTrace();
 		}
 		
-		for(int i = 0; i< 8; i++) {
-			System.out.println(customerList.get(i));
-		}
+//		for(int i = 0; i< 8; i++) {
+//			System.out.println(customerList.get(i));
+//		}
 		return customerList;
 		
 	}
