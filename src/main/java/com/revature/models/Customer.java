@@ -3,176 +3,159 @@ package com.revature.models;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
-import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Scanner;
 
-public class Customer {
+import com.revature.util.ConnectionFactory;
+
+public class Customer implements CustomerInterface{
 	
-	
-	private String firstname;
+	private int id;
+	private String username;
 	private String lastname;
-	private String email;
-	private String phone;
 	
-	
+
 	public Customer() {
-		
+		super();
+		// TODO Auto-generated constructor stub
 	}
 
+	public Customer(int id, String username) {
+		super();
+		this.id = id;
+		this.username = username;
+	}
+	
+	
+	
 
-	public Customer(String firstname, String lastname, String email, String phone) {
-		this.setFirstname(firstname);
-		this.setLastname(lastname);
-		this.setEmail(email);
-		this.setPhone(phone);
+	public int getId() {
+		return id;
 	}
-	
-	String server = "localhost";
-	String url = "jdbc:postgresql://" + server + "/postgres";
-	String username = "postgres" ;
-	String password = "";
-	
-	
-	public String viewBalance(String username, String password) {
-		
-		
-		return "";
+
+	public void setId(int id) {
+		this.id = id;
 	}
-	 
-	
-	public String invokeScanner() {
+
+	public String getUsername() {
+		return username;
+	}
+
+	public void setUsername(String username) {
+		this.username = username;
+	}
+
+	@Override
+	public void applyForAccount() {
+		// TODO Auto-generated method stub
+		
 		Scanner sc = new Scanner(System.in);
-		String userInput = sc.nextLine();
-		return userInput;
-	}
-	
-	public void register() {
-		System.out.println("Please enter your first name: ");
 		
-		this.setFirstname(invokeScanner()); 
-		System.out.println("you entered: "+ this.getFirstname());
-		
-		System.out.println("Please enter your last name: ");
+		System.out.println("Enter firstname: ");
+		String firstname = sc.nextLine();
 
-		this.setLastname(invokeScanner()); 
-		System.out.println("you entered: "+ this.getLastname());
-		
-		System.out.println("Please enter your email: ");
+		System.out.println("Enter last name");
+		String lasttname = sc.nextLine();
 
-		this.setEmail(invokeScanner()); 
-		System.out.println("you entered: "+ this.getEmail());
+		System.out.println("Enter email: ");
+		String email = sc.nextLine();
 
-
-		System.out.println("Please enter your phone number: ");
-
-		this.setPhone(invokeScanner()); 
-		System.out.println("you entered: "+ this.getPhone());
+		System.out.println("Enter phone number");
+		String phone = sc.nextLine();
 		
 		
+		//
+		
+		//persist info to database:
+		PreparedStatement ps;
+		
+		String sql = "INERT INTO "
+				+ "customers(firstname, lastname, email, phone)"
+				+ " VALUES(firstname, lastname, email, phone)";
+		
+		try{
+			ConnectionFactory connection = new ConnectionFactory();
+			ps = connection.prepareStatement(sql);
 
-	}
-	
-	
-	
-	public List<Customer> applyForAccount() {
-		
-		List<Customer> customerList = new ArrayList<>();
-		
-		//Establish connection
-		try(Connection connection = DriverManager.getConnection(url, username, password)){
-			String sql = "SELECT * FROM Customers";
-			
-			PreparedStatement ps = connection.prepareStatement(sql);
-			
-			ResultSet rs = ps.executeQuery();
-			
-		//	System.out.println(rs);
-			
-			
-			
-			int i = 0;
-			while(rs.next()) {
-				//looping through all the rows until no rows
-				
-				customerList.add(
-						new Customer(
-							rs.getString("firstname"),
-							rs.getString("lastname"),
-							rs.getString("Email"),
-							rs.getString("phone")
-						)
-				);
-				i++;
-			}
-			
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
-		
-//		for(int i = 0; i< 8; i++) {
-//			System.out.println(customerList.get(i));
-//		}
-		return customerList;
+			
+
 		
 	}
-	
-	public  void withdraw() {
+
+	@Override
+	public void register() {
+		// TODO Auto-generated method stub
 		
 	}
-	
-	public void deposit() {
+
+	@Override
+	public boolean login() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public boolean logout() {
+		// TODO Auto-generated method stub
+		return false;
+	}
+
+	@Override
+	public void viewBalance() {
+		// TODO Auto-generated method stub
 		
 	}
-	
-	public void makeTransfer() {
+
+	@Override
+	public boolean withdraw(double amount) {
+		return false;
+		// TODO Auto-generated method stub
 		
 	}
-	
+
+	@Override
+	public boolean deposit(double amount) {
+		return false;
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
+	public boolean transfer(double amount) {
+		return false;
+		// TODO Auto-generated method stub
+		
+	}
+
+	@Override
 	public void acceptTransfer() {
+		// TODO Auto-generated method stub
 		
 	}
 
-
-	public String getFirstname() {
-		return firstname;
+	public List<Customer> selectAtivitiesByUserId(int id) {
+		// TODO Auto-generated method stub
+		
+		String sql = "SELECT * FROM customers_table WHERE fk_user_id = ?";
+		List<Customer> customerTransactions = new ArrayList<>();
+//		try {
+//			
+//			ConnectionFactory connection;
+//				connection = ConnectionFactory.getConnection();
+//			
+//			}
+//			PreparedStatement ps = connection.prepareStatement(sql);
+//		}catch(SQLException e) {
+//			e.printStackTrace();
+//		}
+		
+		return null;
 	}
-
-
-	public void setFirstname(String firstname) {
-		this.firstname = firstname;
-	}
-
-
-	public String getLastname() {
-		return lastname;
-	}
-
-
-	public void setLastname(String lastname) {
-		this.lastname = lastname;
-	}
-
-
-	public String getEmail() {
-		return email;
-	}
-
-
-	public void setEmail(String email) {
-		this.email = email;
-	}
-
-
-	public String getPhone() {
-		return phone;
-	}
-
-
-	public void setPhone(String phone) {
-		this.phone = phone;
-	}
+	
 
 }

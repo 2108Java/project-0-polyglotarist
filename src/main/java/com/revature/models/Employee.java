@@ -1,18 +1,22 @@
 package com.revature.models;
 
-public class Employee {
-	
-	
-	
-	public void processRegistration() {
+public class Employee implements EmployeeInterface{
+
+	@Override
+	public void processApplication() {
+		// TODO Auto-generated method stub
 		
 	}
-	
-	public void viewAccount() {
+
+	@Override
+	public void viewAccount(Customer customer) {
+		// TODO Auto-generated method stub
 		
 	}
-	
-	public void viewLog() {
+
+	@Override
+	public void viewTransactionsLog() {
+		// TODO Auto-generated method stub
 		
 	}
 
