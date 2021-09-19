@@ -20,6 +20,10 @@ public class Customer implements CustomerInterface{
 	
 	
 	Employee employee = new Employee();
+	Scanner sc = new Scanner(System.in);
+	ConnectionFactory connectionFactory = new ConnectionFactory();
+	String sql;
+	PreparedStatement ps;
 
 	public String getFirstrname() {
 		return firstrname;
@@ -87,10 +91,6 @@ public class Customer implements CustomerInterface{
 	public void applyForAccount() {
 		// TODO Auto-generated method stub
 		
-		ConnectionFactory connectionFactory = new ConnectionFactory();
-		
-		Scanner sc = new Scanner(System.in);
-		
 		System.out.println("Enter firstname: ");
 		String firstname = sc.nextLine();
 
@@ -107,9 +107,8 @@ public class Customer implements CustomerInterface{
 		//
 		
 		//persist info to database:
-		PreparedStatement ps;
 		
-		String sql = "INSERT INTO "
+		sql = "INSERT INTO "
 				+ "customers(firstname, lastname, email, phone)"
 				+ " VALUES(?,?,?,?)";
 		
@@ -145,6 +144,16 @@ public class Customer implements CustomerInterface{
 	@Override
 	public void register() {
 		// TODO Auto-generated method stub
+		
+		User user = new User();
+
+		System.out.println("Please choose a username");
+		user.setUsername(sc.nextLine());
+		System.out.println("Please type a password: ");
+		user.setPassword(sc.nextLine());
+		
+		
+		
 		
 	}
 

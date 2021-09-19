@@ -49,16 +49,10 @@ public class PresentationImpl implements PresentationInterface{
 			break;
 		default:
 			break;
-				
-			
+					
 		}
 		
-		User user = new User();
-
-		System.out.println("Please choose a username");
-		user.setUsername(sc.nextLine());
-		System.out.println("Please type a password: ");
-		user.setPassword(sc.nextLine());
+		customer.register();
 		
 	}
 	
