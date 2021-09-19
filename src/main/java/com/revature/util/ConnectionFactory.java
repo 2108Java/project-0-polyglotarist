@@ -6,13 +6,13 @@ import java.sql.SQLException;
 
 public class ConnectionFactory {
 	
-	private static final String url = "jdbc:postgresql://localhost";
-	private static final String username = "postgres";
-	private static final String password = "";
+	private static final String URL = "jdbc:postgresql://localhost/";
+	private static final String USERNAME = "postgres";
+	private static final String PASSWORD = "";
 	
 	public Connection getConnection() throws SQLException{
 		
-		Connection connection = DriverManager.getConnection(url, username, password);
+		Connection connection = DriverManager.getConnection(URL, USERNAME, PASSWORD);
 		
 		return connection;
 	}

@@ -12,44 +12,82 @@ import com.revature.util.ConnectionFactory;
 
 public class Customer implements CustomerInterface{
 	
-	private int id;
-	private String username;
+//	private int id;
+	private String firstrname;
 	private String lastname;
+	private String email;
+	private String phone;
 	
+	
+	Employee employee = new Employee();
+
+	public String getFirstrname() {
+		return firstrname;
+	}
+
+	public void setFirstrname(String firstrname) {
+		this.firstrname = firstrname;
+	}
+
+	public String getLastname() {
+		return lastname;
+	}
+
+	public void setLastname(String lastname) {
+		this.lastname = lastname;
+	}
+
+	public String getEmail() {
+		return email;
+	}
+
+	public void setEmail(String email) {
+		this.email = email;
+	}
+
+	public String getPhone() {
+		return phone;
+	}
+
+	public void setPhone(String phone) {
+		this.phone = phone;
+	}
 
 	public Customer() {
 		super();
 		// TODO Auto-generated constructor stub
 	}
 
-	public Customer(int id, String username) {
-		super();
-		this.id = id;
-		this.username = username;
-	}
+//	public Customer(int id, String username) {
+//		super();
+//		this.id = id;
+//		this.username = username;
+//	}
 	
 	
 	
 
-	public int getId() {
-		return id;
-	}
+//	public int getId() {
+//		return id;
+//	}
+//
+//	public void setId(int id) {
+//		this.id = id;
+//	}
 
-	public void setId(int id) {
-		this.id = id;
-	}
-
-	public String getUsername() {
-		return username;
-	}
-
-	public void setUsername(String username) {
-		this.username = username;
-	}
+//	public String getUsername() {
+//		return username;
+//	}
+//
+//	public void setUsername(String username) {
+//		this.username = username;
+//	}
 
 	@Override
 	public void applyForAccount() {
 		// TODO Auto-generated method stub
+		
+		ConnectionFactory connectionFactory = new ConnectionFactory();
 		
 		Scanner sc = new Scanner(System.in);
 		
@@ -57,7 +95,7 @@ public class Customer implements CustomerInterface{
 		String firstname = sc.nextLine();
 
 		System.out.println("Enter last name");
-		String lasttname = sc.nextLine();
+		String lastname = sc.nextLine();
 
 		System.out.println("Enter email: ");
 		String email = sc.nextLine();
@@ -71,19 +109,36 @@ public class Customer implements CustomerInterface{
 		//persist info to database:
 		PreparedStatement ps;
 		
-		String sql = "INERT INTO "
+		String sql = "INSERT INTO "
 				+ "customers(firstname, lastname, email, phone)"
-				+ " VALUES(firstname, lastname, email, phone)";
+				+ " VALUES(?,?,?,?)";
 		
 		try{
-			ConnectionFactory connection = new ConnectionFactory();
+			Connection connection = connectionFactory.getConnection();
 			ps = connection.prepareStatement(sql);
+			
+			ps.setString(1,firstname);
+			ps.setString(2,lastname);
+			ps.setString(3, email);
+			ps.setString(4, phone);
+			
+			ps.execute();
+			
+			
 
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
 			
-
+		System.out.println("Please wait while we process your information...");
+		try {
+			Thread.sleep(4000);
+		} catch (InterruptedException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		
+		employee.processApplication();
 		
 	}
 
