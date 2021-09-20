@@ -153,6 +153,26 @@ public class Customer implements CustomerInterface{
 		user.setPassword(sc.nextLine());
 		
 		
+//		System.out.println(user.getUsername());
+		
+		//save info into users table:
+		sql = "INSERT INTO users VALUES(?,?)";
+		
+		try{
+			Connection connection = connectionFactory.getConnection();
+			ps = connection.prepareStatement(sql);
+			
+			ps.setString(1, user.getUsername());
+			ps.setString(2, user.getPassword());
+			
+			
+			ps.execute();
+			
+			
+
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
 		
 		
 	}
@@ -160,7 +180,45 @@ public class Customer implements CustomerInterface{
 	@Override
 	public boolean login() {
 		// TODO Auto-generated method stub
-		return false;
+		boolean success = false;
+		User user = new User();
+		System.out.println("Please enter your username");
+		
+		String userInput = sc.nextLine();
+		
+		System.out.println("Please enter your password");
+		
+		String userInput2 = sc.nextLine();
+
+		
+		sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+		
+		try{
+			Connection connection = connectionFactory.getConnection();
+			ps = connection.prepareStatement(sql);
+			
+			ps.setString(1, user.getUsername());
+			ps.setString(2, user.getPassword());
+			
+			
+			
+			ps.executeQuery();
+			
+			if(userInput.equals(user.getUsername()) && userInput2.equals(user.getPassword())) {
+				System.out.println("You have successfully logged in.");
+				success = true;
+			}else {
+				System.out.println("You have entered the wrong credentials! Please try again: ");
+				login();
+			}
+			
+			
+
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return success;
 	}
 
 	@Override

@@ -53,6 +53,12 @@ public class PresentationImpl implements PresentationInterface{
 		}
 		
 		customer.register();
+		customer.login();
+		customer.logout();
+		customer.viewBalance();
+		customer.deposit(100);
+		customer.withdraw(50);
+		
 		
 	}
 	
