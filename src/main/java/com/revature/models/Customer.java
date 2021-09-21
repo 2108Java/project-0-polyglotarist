@@ -3,6 +3,7 @@ package com.revature.models;
 import java.sql.Connection;
 import java.sql.DriverManager;
 import java.sql.PreparedStatement;
+import java.sql.ResultSet;
 import java.sql.SQLException;
 import java.util.ArrayList;
 import java.util.List;
@@ -191,31 +192,34 @@ public class Customer implements CustomerInterface{
 		String userInput2 = sc.nextLine();
 
 		
-		sql = "SELECT * FROM users WHERE username = ? AND password = ?";
+		sql = "SELECT * FROM users WHERE username = ? ";
 		
 		try{
 			Connection connection = connectionFactory.getConnection();
 			ps = connection.prepareStatement(sql);
 			
-			ps.setString(1, user.getUsername());
-			ps.setString(2, user.getPassword());
+			ps.setString(1, userInput);
 			
 			
+		    ResultSet rs = ps.executeQuery();
+		    
+		    
+			while(rs.next()) {
+				user = new User(rs.getString("username"), rs.getString("password"));
+			}
 			
-			ps.executeQuery();
-			
+			System.out.println("got here");
 			if(userInput.equals(user.getUsername()) && userInput2.equals(user.getPassword())) {
 				System.out.println("You have successfully logged in.");
 				success = true;
 			}else {
 				System.out.println("You have entered the wrong credentials! Please try again: ");
-				login();
-			}
-			
-			
+			}		
 
 		}catch(SQLException e) {
 			e.printStackTrace();
+		}finally {
+//			connectionFactory.close();
 		}
 		
 		return success;

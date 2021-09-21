@@ -42,8 +42,10 @@ public class PresentationImpl implements PresentationInterface{
 			customer.applyForAccount();
 			break;
 		case "2":
+			customer.register();
 			break;
 		case "3":
+			customer.login();
 			break;
 		case "4": 
 			break;
@@ -52,13 +54,12 @@ public class PresentationImpl implements PresentationInterface{
 					
 		}
 		
-		customer.register();
-		customer.login();
-		customer.logout();
-		customer.viewBalance();
-		customer.deposit(100);
-		customer.withdraw(50);
-		
+//		customer.register();
+//		customer.logout();
+//		customer.viewBalance();
+//		customer.deposit(100);
+//		customer.withdraw(50);
+//		
 		
 	}
 	
