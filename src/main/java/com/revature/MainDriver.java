@@ -14,6 +14,7 @@ public class MainDriver {
 		
 		
 		PresentationImpl menu = new PresentationImpl();
+		menu.welcomeMessage();
 		menu.display();
 		
 		UserDao uDao = new UserDaoImpl();

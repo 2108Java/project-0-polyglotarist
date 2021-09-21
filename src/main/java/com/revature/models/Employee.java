@@ -9,12 +9,15 @@ import java.sql.SQLException;
 import com.revature.util.ConnectionFactory;
 
 public class Employee implements EmployeeInterface{
+	
+	User user = new User();
 
 	@Override
-	public void processApplication() {
+	public boolean processApplication(String customer_email) {
 		// TODO Auto-generated method stub
 		boolean userExists = false;
 		Customer customer = new Customer();
+//		String customerEmail = customer.applyForAccount();
 		
 		ConnectionFactory connectionFactory = new ConnectionFactory();
 		
@@ -25,23 +28,26 @@ public class Employee implements EmployeeInterface{
 		try{
 			Connection connection = connectionFactory.getConnection();
 			ps = connection.prepareStatement(sql);
-			ps.setString(1, customer.getEmail());
+			ps.setString(1, customer_email);
 			
 			ResultSet rs = ps.executeQuery();
 			
-			if(rs.next()) {
+			while(rs.next()) {
+				if(customer_email.equals(customer.getEmail()))
 				System.out.println("Congratulations! Your application is approved.");
+				userExists = true;
 				
-			}else {
-				System.out.println("Sorry, your application is denied.");
 			}
+//			else {
+//				System.out.println("Sorry, your application is denied.");
+//			}
 			
 		}catch(SQLException e){
 			e.printStackTrace();
 		}
 		
 		
-		
+		return userExists;
 	}
 
 	@Override

@@ -10,15 +10,15 @@ public interface CustomerInterface {
 	
 	public boolean login();
 	
-	public boolean logout();
+	public void logout();
 	
 	public void viewBalance();
 	
-	public boolean withdraw(double amount);
+	public boolean withdraw();
 	
-	public boolean deposit(double amount);
+	public boolean deposit();
 	
-	public boolean transfer(double amount);
+	public boolean transfer();
 	
 	public void acceptTransfer();
 	

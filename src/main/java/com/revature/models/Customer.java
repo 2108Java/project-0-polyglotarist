@@ -13,7 +13,7 @@ import com.revature.util.ConnectionFactory;
 
 public class Customer implements CustomerInterface{
 	
-//	private int id;
+	private int customer_id;
 	private String firstrname;
 	private String lastname;
 	private String email;
@@ -25,6 +25,22 @@ public class Customer implements CustomerInterface{
 	ConnectionFactory connectionFactory = new ConnectionFactory();
 	String sql;
 	PreparedStatement ps;
+	
+	
+
+	public Customer(int customer_id, String firstrname, String lastname, String email, String phone) {
+		super();
+		this.customer_id = customer_id;
+		this.firstrname = firstrname;
+		this.lastname = lastname;
+		this.email = email;
+		this.phone = phone;
+		
+	}
+	
+	public int getCustomerId() {
+		return customer_id;
+	}
 
 	public String getFirstrname() {
 		return firstrname;
@@ -92,6 +108,8 @@ public class Customer implements CustomerInterface{
 	public void applyForAccount() {
 		// TODO Auto-generated method stub
 		
+		Customer customer = new Customer();
+		
 		System.out.println("Enter firstname: ");
 		String firstname = sc.nextLine();
 
@@ -130,7 +148,7 @@ public class Customer implements CustomerInterface{
 			e.printStackTrace();
 		}
 			
-		System.out.println("Please wait while we process your information...");
+		System.out.println("Please wait while an employee processes your information...");
 		try {
 			Thread.sleep(4000);
 		} catch (InterruptedException e) {
@@ -138,7 +156,43 @@ public class Customer implements CustomerInterface{
 			e.printStackTrace();
 		}
 		
-		employee.processApplication();
+		
+		
+//		employee.processApplication(email);
+		
+		sql = "SELECT * FROM customers WHERE email = ?";
+		
+		try {
+			Connection connection = connectionFactory.getConnection();
+			ps = connection.prepareStatement(sql);
+			ps.setString(1, email);
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				customer = new Customer(
+						rs.getInt("customer_id"),
+						rs.getString("firstname"),
+						rs.getString("lastname"),
+						rs.getString("email"),
+						rs.getString("phone")
+				);			
+			}
+			
+			if(email.equals(customer.getEmail())) {
+				System.out.println("Congratulations! Your applicatin is approved.");
+			}else{
+				System.out.println("Sorry, your application is denied.");
+			}
+		}catch(SQLException e) {
+			
+			e.printStackTrace();
+		}
+		
+//		if(employeeApproval) {
+//			System.out.println("Congratulations! Your application is approved.");
+//		}else {
+//			System.out.println("Sorry, your application is denied.");
+//		}
 		
 	}
 
@@ -157,7 +211,7 @@ public class Customer implements CustomerInterface{
 //		System.out.println(user.getUsername());
 		
 		//save info into users table:
-		sql = "INSERT INTO users VALUES(?,?)";
+		sql = "INSERT INTO users(username, password) VALUES(?,?)";
 		
 		try{
 			Connection connection = connectionFactory.getConnection();
@@ -205,54 +259,57 @@ public class Customer implements CustomerInterface{
 		    
 		    
 			while(rs.next()) {
-				user = new User(rs.getString("username"), rs.getString("password"));
+				user = new User(rs.getInt("user_id"), rs.getString("username"), rs.getString("password"));
 			}
 			
-			System.out.println("got here");
+//			System.out.println("got here");
 			if(userInput.equals(user.getUsername()) && userInput2.equals(user.getPassword())) {
 				System.out.println("You have successfully logged in.");
 				success = true;
 			}else {
 				System.out.println("You have entered the wrong credentials! Please try again: ");
-			}		
+			}	
+			
+			connection.close();
 
 		}catch(SQLException e) {
 			e.printStackTrace();
-		}finally {
-//			connectionFactory.close();
 		}
 		
 		return success;
 	}
 
 	@Override
-	public boolean logout() {
+	public void logout() {
 		// TODO Auto-generated method stub
-		return false;
+		System.out.println("Thank you for using the Bank App!");
+		System.exit(0);
+	
 	}
 
 	@Override
 	public void viewBalance() {
 		// TODO Auto-generated method stub
+//		sql = "SELECT * FROM accounts_table WHERE isChecking = true";
 		
 	}
 
 	@Override
-	public boolean withdraw(double amount) {
+	public boolean withdraw() {
 		return false;
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public boolean deposit(double amount) {
+	public boolean deposit() {
 		return false;
 		// TODO Auto-generated method stub
 		
 	}
 
 	@Override
-	public boolean transfer(double amount) {
+	public boolean transfer() {
 		return false;
 		// TODO Auto-generated method stub
 		
@@ -281,6 +338,14 @@ public class Customer implements CustomerInterface{
 //		}
 		
 		return null;
+	}
+
+	public int getCustomer_id() {
+		return customer_id;
+	}
+
+	public void setCustomer_id(int customer_id) {
+		this.customer_id = customer_id;
 	}
 	
 

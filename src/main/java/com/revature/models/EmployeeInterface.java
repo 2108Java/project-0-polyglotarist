@@ -2,7 +2,7 @@ package com.revature.models;
 
 public interface EmployeeInterface {
 	
-	public void processApplication();
+	public boolean processApplication(String email);
 	
 	public void viewAccount(Customer customer);
 	
