@@ -22,6 +22,8 @@ public class Customer implements CustomerInterface{
 	
 	static int currentCustomerObjectId;
 	static int currentUserObjectId;
+	
+	
 	Customer customer;
 	Employee employee = new Employee();
 	Scanner sc = new Scanner(System.in);
@@ -297,7 +299,11 @@ public class Customer implements CustomerInterface{
 		    
 		    
 			while(rs.next()) {
-				user = new User(rs.getInt("user_id"), rs.getString("username"), rs.getString("password"));
+				user = new User(
+						rs.getInt("user_id"), 
+						rs.getString("username"), 
+						rs.getString("password")
+				);
 			}
 			
 //			System.out.println("got here");
@@ -326,9 +332,8 @@ public class Customer implements CustomerInterface{
 
 	@Override
 	public void viewBalance() {
-		// TODO Auto-generated method stub
-//		sql = "SELECT * FROM accounts_table WHERE isChecking = true";
 		
+		System.out.println("Your current balance is: " + getOldBalance());
 	}
 
 	@Override
@@ -366,6 +371,32 @@ public class Customer implements CustomerInterface{
 		}
 
 		System.out.println(userDepositAmount + " dollars have been added to your account.");
+		
+		sql = "SELECT * FROM accounts WHERE fk_customer_id = ? ";
+		
+		try{
+			Connection connection = connectionFactory.getConnection();
+			ps = connection.prepareStatement(sql);
+			
+			ps.setInt(1, currentCustomerObjectId);
+			
+			
+		    ResultSet rs = ps.executeQuery();
+		    
+		    
+			while(rs.next()) {
+				account = new AccountClass(
+						rs.getInt("balance"), 
+						rs.getInt("fk_user_id"), 
+						rs.getInt("fk_customer_id")
+				);
+			}	
+
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+
+		
 	}
 
 	@Override
@@ -386,7 +417,7 @@ public class Customer implements CustomerInterface{
 			Connection connection = connectionFactory.getConnection();
 			
 			ps = connection.prepareStatement(sql);
-			ps.setInt(1, userDepositAmount + getOldBalanceById(currentCustomerObjectId));
+			ps.setInt(1, userDepositAmount + this.getOldBalance());
 //			ps.setInt(2, user.getUserId());
 //			ps.setInt(2, currentCustomerObjectId);
 			ps.execute();
@@ -405,9 +436,7 @@ public class Customer implements CustomerInterface{
 	
 	//helper method that gets balance from database by customer id:
 	
-	public int getOldBalanceById(int customerId) {
-		
-		customerId = currentCustomerObjectId;
+	public int getOldBalance() {
 		
 		int oldBalance = 0;
         sql = "SELECT * FROM accounts WHERE fk_customer_id = ? ";
@@ -416,22 +445,26 @@ public class Customer implements CustomerInterface{
 			Connection connection = connectionFactory.getConnection();
 			ps = connection.prepareStatement(sql);
 			
-			ps.setInt(1, customerId);
-			
+			ps.setInt(1, currentCustomerObjectId);
 			
 		    ResultSet rs = ps.executeQuery();
 		    
-		    
 			while(rs.next()) {
-				oldBalance = rs.getInt("balance");
+				account = new AccountClass(
+					rs.getInt("balance"),
+					rs.getInt("fk_user_id"),
+					rs.getInt("fk_customer_id")
+				);
 			}
 			
-			connection.close();
+			oldBalance = account.getBalance();
+//			System.out.println(account.getBalance());
+//			int oldBalance = account.getBalance();
 
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
-		
+		System.out.println("the old balance is : " + oldBalance);
 		return oldBalance;
 	}
 

@@ -28,7 +28,7 @@ public class AccountClass {
 	}
 	
 	public int getBalance() {
-		return balance;
+		return this.balance;
 	}
 	public void setBalance(int balance) {
 		this.balance = balance;
