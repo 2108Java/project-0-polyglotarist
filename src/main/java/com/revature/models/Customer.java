@@ -245,6 +245,8 @@ public class Customer implements CustomerInterface{
 			e.printStackTrace();
 		}
 		
+		System.out.println("You have successfully registered you account. "
+				+ "Please login and make an initial deposit");
 		makeInitialDeposit();
 		
 	}
@@ -323,8 +325,9 @@ public class Customer implements CustomerInterface{
 	
 	public boolean makeInitialDeposit() {
 		boolean success = false;
+		boolean loggedIn = login();
 
-		if (login()) {
+		if (loggedIn) {
 
 			System.out.println("please enter insert amount you would like to deposit into the machine: ");
 			int userDepositAmount = sc.nextInt();
