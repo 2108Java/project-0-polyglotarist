@@ -20,6 +20,9 @@ public class Customer implements CustomerInterface{
 	private String phone;
 	
 	
+	static int currentCustomerObjectId;
+	static int currentUserObjectId;
+	Customer customer;
 	Employee employee = new Employee();
 	Scanner sc = new Scanner(System.in);
 	ConnectionFactory connectionFactory = new ConnectionFactory();
@@ -28,7 +31,7 @@ public class Customer implements CustomerInterface{
 	PreparedStatement ps;
 	User user = new User();
 	AccountClass account = new AccountClass();
-	private Customer customer;
+	
 	
 	//default constructor:
 	
@@ -54,6 +57,10 @@ public class Customer implements CustomerInterface{
 	
 	public int getCustomerId() {
 		return customer_id;
+	}
+	
+	public void setCustomerId(int customer_id) {
+		this.customer_id = customer_id;
 	}
 
 	public String getFirstrname() {
@@ -92,34 +99,9 @@ public class Customer implements CustomerInterface{
 		// TODO Auto-generated constructor stub
 	}
 
-//	public Customer(int id, String username) {
-//		super();
-//		this.id = id;
-//		this.username = username;
-//	}
-	
-	
-	
-
-//	public int getId() {
-//		return id;
-//	}
-//
-//	public void setId(int id) {
-//		this.id = id;
-//	}
-
-//	public String getUsername() {
-//		return username;
-//	}
-//
-//	public void setUsername(String username) {
-//		this.username = username;
-//	}
 
 	@Override
 	public void applyForAccount() {
-		// TODO Auto-generated method stub
 		
 		System.out.println("Enter firstname: ");
 		String firstname = sc.nextLine();
@@ -132,9 +114,6 @@ public class Customer implements CustomerInterface{
 
 		System.out.println("Enter phone number");
 		String phone = sc.nextLine();
-		
-		
-		//
 		
 		//persist info to database:
 		
@@ -158,6 +137,8 @@ public class Customer implements CustomerInterface{
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
+		
+		
 			
 		System.out.println("Please wait while an employee processes your information...");
 		try {
@@ -170,6 +151,8 @@ public class Customer implements CustomerInterface{
 		
 		
 //		employee.processApplication(email);
+		
+		//create a customer Object using info from database:
 		
 		sql = "SELECT * FROM customers WHERE email = ?";
 		
@@ -193,6 +176,9 @@ public class Customer implements CustomerInterface{
 				System.out.println("Congratulations! Your applicatin is approved. "
 						+ "You will be prompted to make an initial deposit when "
 						+ "registering your account.");
+				currentCustomerObjectId = customer.getCustomerId();
+//				System.out.println("the current object customer_id is: "+ customer.getCustomerId());
+
 			}else{
 				System.out.println("Sorry, your application is denied.");
 			}
@@ -219,9 +205,10 @@ public class Customer implements CustomerInterface{
 //		AccountClass account = new AccountClass();
 
 		System.out.println("Please choose a username");
-		user.setUsername(sc.nextLine());
+		String usernameInput = sc.nextLine();
+		
 		System.out.println("Please type a password: ");
-		user.setPassword(sc.nextLine());
+		String passwordInput = sc.nextLine();
 		
 		
 //		System.out.println(user.getUsername());
@@ -233,27 +220,59 @@ public class Customer implements CustomerInterface{
 			Connection connection = connectionFactory.getConnection();
 			ps = connection.prepareStatement(sql);
 			
-			ps.setString(1, user.getUsername());
-			ps.setString(2, user.getPassword());
+			ps.setString(1, usernameInput);
+			ps.setString(2, passwordInput);
 			
 			
 			ps.execute();
 			
-			
+//			user = new User(usernameInput, passwordInput);
+//			System.out.println("currentUerId is : " + user.getUserId());
 
 		}catch(SQLException e) {
 			e.printStackTrace();
 		}
 		
-		System.out.println("You have successfully registered you account. "
-				+ "Please login and make an initial deposit");
+		
+		sql = "SELECT * FROM users WHERE username = ?";
+		
+		try {
+			Connection connection = connectionFactory.getConnection();
+			ps = connection.prepareStatement(sql);
+			ps.setString(1, usernameInput);
+			ResultSet rs = ps.executeQuery();
+			
+			while(rs.next()) {
+				user = new User(
+						rs.getInt("user_id"),
+						rs.getString("username"),
+						rs.getString("password")
+				);			
+			}
+			
+			if(usernameInput.equals(user.getUsername())) {
+				System.out.println("You are added as an authorized user to the system.");
+				currentUserObjectId = user.getUserId();
+//				System.out.println("the current object customer_id is: "+ customer.getCustomerId());
+
+		
+		System.out.println("You have successfully registered your account. ");
 		makeInitialDeposit();
+			}else {
+				System.out.println("You have not been successfully added as an authorized user. Please try again.");
+			}
+		
+		}catch(SQLException e) {
+				e.printStackTrace();
+		}
 		
 	}
 
 	@Override
 	public boolean login() {
-		// TODO Auto-generated method stub
+//		System.out.println("the current object customer_id is: "+ currentCustomerObjectId);
+
+		
 		boolean success = false;
 		
 		System.out.println("Please enter your username");
@@ -288,8 +307,6 @@ public class Customer implements CustomerInterface{
 			}else {
 				System.out.println("You have entered the wrong credentials! Please try again: ");
 			}	
-			
-			connection.close();
 
 		}catch(SQLException e) {
 			e.printStackTrace();
@@ -323,84 +340,99 @@ public class Customer implements CustomerInterface{
 	
 	//helper method to make the first deposit when applying:
 	
-	public boolean makeInitialDeposit() {
-		boolean success = false;
-		boolean loggedIn = login();
+	public void makeInitialDeposit() {
+		
+		System.out.println("please enter insert amount you would like to deposit into the machine: ");
+		int userDepositAmount = sc.nextInt();
 
-		if (loggedIn) {
-
-			System.out.println("please enter insert amount you would like to deposit into the machine: ");
-			int userDepositAmount = sc.nextInt();
-
-			if (userDepositAmount < 0) {
-				System.out.println("The bills inserted were rejected!");
-				return false;
-			}
-
-			sql = "INSERT INTO accounts(balance, fk_user_id, fk_customer_id) VALUES(?,?,?)";
-
-			try {
-				Connection connection = connectionFactory.getConnection();
-
-				ps = connection.prepareStatement(sql);
-				ps.setInt(1, userDepositAmount);
-				ps.setInt(2, user.getUserId());
-				ps.setInt(3, customer.getCustomerId());
-				ps.execute();
-
-			} catch (SQLException e) {
-				e.printStackTrace();
-			}
-
-			System.out.println(userDepositAmount + " dollars have been added to your account.");
-
-		} else {
-
-			System.out.println("You must login before you can make a deposit!");
+		if (userDepositAmount < 0) {
+			System.out.println("The bills inserted were rejected!");
+			
 		}
 
-		return success;
+		sql = "INSERT INTO accounts(balance, fk_user_id, fk_customer_id) VALUES(?,?,?)";
+
+		try {
+			Connection connection = connectionFactory.getConnection();
+
+			ps = connection.prepareStatement(sql);
+			ps.setInt(1, userDepositAmount);
+			ps.setInt(2, user.getUserId());
+			ps.setInt(3, customer.getCustomerId());
+			ps.execute();
+
+		} catch (SQLException e) {
+			e.printStackTrace();
+		}
+
+		System.out.println(userDepositAmount + " dollars have been added to your account.");
 	}
 
 	@Override
 	public boolean deposit() {
 		boolean success = false;
 		
-		if(login()) {
-			
-			System.out.println("please enter insert amount you would like to deposit into the machine: ");
-			int userDepositAmount = sc.nextInt();
-			
-			if(userDepositAmount < 0) {
-				System.out.println("The bills inserted were rejected!");
-				return false;
-			}
-			
-			sql = "INSERT INTO accounts(balance, fk_user_id, fk_customer_id) VALUES(?,?,?)";
-			
-			try {
-				Connection connection = connectionFactory.getConnection();
-				
-				ps = connection.prepareStatement(sql);
-				ps.setInt(1, userDepositAmount);
-				ps.setInt(2, user.getUserId());
-				ps.setInt(3,  customer.getCustomerId());
-				ps.execute();
-				
-			}catch(SQLException e) {
-				e.printStackTrace();
-			}
-			
-			System.out.println(userDepositAmount + " dollars have been added to your account.");
-
-		}else {
-			
-			System.out.println("You must login before you can make a deposit!");
+		System.out.println("please enter insert amount you would like to deposit into the machine: ");
+		int userDepositAmount = sc.nextInt();
+		
+		if(userDepositAmount < 0) {
+			System.out.println("The bills inserted were rejected!");
+			return false;
 		}
+		
+		sql = "UPDATE accounts SET balance = ? WHERE fk_customer_id = currentCustomerObjectId";
+		
+		try {
+			Connection connection = connectionFactory.getConnection();
+			
+			ps = connection.prepareStatement(sql);
+			ps.setInt(1, userDepositAmount + getOldBalanceById(currentCustomerObjectId));
+//			ps.setInt(2, user.getUserId());
+//			ps.setInt(2, currentCustomerObjectId);
+			ps.execute();
+			
+			
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println(userDepositAmount + " dollars have been added to your account.");
 		
 		return success;
 		
 		
+	}
+	
+	//helper method that gets balance from database by customer id:
+	
+	public int getOldBalanceById(int customerId) {
+		
+		customerId = currentCustomerObjectId;
+		
+		int oldBalance = 0;
+        sql = "SELECT * FROM accounts WHERE fk_customer_id = ? ";
+		
+		try{
+			Connection connection = connectionFactory.getConnection();
+			ps = connection.prepareStatement(sql);
+			
+			ps.setInt(1, customerId);
+			
+			
+		    ResultSet rs = ps.executeQuery();
+		    
+		    
+			while(rs.next()) {
+				oldBalance = rs.getInt("balance");
+			}
+			
+			connection.close();
+
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		return oldBalance;
 	}
 
 	@Override
@@ -434,14 +466,5 @@ public class Customer implements CustomerInterface{
 		
 		return null;
 	}
-
-	public int getCustomer_id() {
-		return customer_id;
-	}
-
-	public void setCustomer_id(int customer_id) {
-		this.customer_id = customer_id;
-	}
-	
 
 }
