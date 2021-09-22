@@ -14,7 +14,7 @@ import com.revature.util.ConnectionFactory;
 public class Customer implements CustomerInterface{
 	
 	private int customer_id;
-	private String firstrname;
+	private String firstname;
 	private String lastname;
 	private String email;
 	private String phone;
@@ -24,30 +24,44 @@ public class Customer implements CustomerInterface{
 	Scanner sc = new Scanner(System.in);
 	ConnectionFactory connectionFactory = new ConnectionFactory();
 	String sql;
+//	String sql2;
 	PreparedStatement ps;
+	User user = new User();
+	AccountClass account = new AccountClass();
+	private Customer customer;
 	
+	//default constructor:
 	
-
-	public Customer(int customer_id, String firstrname, String lastname, String email, String phone) {
-		super();
+//	public Customer() {
+//		this.customer_id = 0;
+//		this.firstname = "";
+//		this.lastname = "";
+//		this.email = "";
+//		this.phone = "";
+//	}
+	//parameterized constructor:
+	public Customer(int customer_id, String firstname, String lastname, String email, String phone) {
+//		super();
 		this.customer_id = customer_id;
-		this.firstrname = firstrname;
+		this.firstname = firstname;
 		this.lastname = lastname;
 		this.email = email;
 		this.phone = phone;
 		
 	}
 	
+//	Customer customer = new Customer();
+	
 	public int getCustomerId() {
 		return customer_id;
 	}
 
 	public String getFirstrname() {
-		return firstrname;
+		return firstname;
 	}
 
 	public void setFirstrname(String firstrname) {
-		this.firstrname = firstrname;
+		this.firstname = firstrname;
 	}
 
 	public String getLastname() {
@@ -75,7 +89,6 @@ public class Customer implements CustomerInterface{
 	}
 
 	public Customer() {
-		super();
 		// TODO Auto-generated constructor stub
 	}
 
@@ -107,8 +120,6 @@ public class Customer implements CustomerInterface{
 	@Override
 	public void applyForAccount() {
 		// TODO Auto-generated method stub
-		
-		Customer customer = new Customer();
 		
 		System.out.println("Enter firstname: ");
 		String firstname = sc.nextLine();
@@ -179,7 +190,9 @@ public class Customer implements CustomerInterface{
 			}
 			
 			if(email.equals(customer.getEmail())) {
-				System.out.println("Congratulations! Your applicatin is approved.");
+				System.out.println("Congratulations! Your applicatin is approved. "
+						+ "You will be prompted to make an initial deposit when "
+						+ "registering your account.");
 			}else{
 				System.out.println("Sorry, your application is denied.");
 			}
@@ -187,6 +200,8 @@ public class Customer implements CustomerInterface{
 			
 			e.printStackTrace();
 		}
+		
+		
 		
 //		if(employeeApproval) {
 //			System.out.println("Congratulations! Your application is approved.");
@@ -200,7 +215,8 @@ public class Customer implements CustomerInterface{
 	public void register() {
 		// TODO Auto-generated method stub
 		
-		User user = new User();
+//		User user = new User();
+//		AccountClass account = new AccountClass();
 
 		System.out.println("Please choose a username");
 		user.setUsername(sc.nextLine());
@@ -229,6 +245,7 @@ public class Customer implements CustomerInterface{
 			e.printStackTrace();
 		}
 		
+		makeInitialDeposit();
 		
 	}
 
@@ -236,7 +253,7 @@ public class Customer implements CustomerInterface{
 	public boolean login() {
 		// TODO Auto-generated method stub
 		boolean success = false;
-		User user = new User();
+		
 		System.out.println("Please enter your username");
 		
 		String userInput = sc.nextLine();
@@ -276,6 +293,7 @@ public class Customer implements CustomerInterface{
 			e.printStackTrace();
 		}
 		
+		//System.out.println("the userId is: "+ user.getUserId());
 		return success;
 	}
 
@@ -300,11 +318,85 @@ public class Customer implements CustomerInterface{
 		// TODO Auto-generated method stub
 		
 	}
+	
+	//helper method to make the first deposit when applying:
+	
+	public boolean makeInitialDeposit() {
+		boolean success = false;
+
+		if (login()) {
+
+			System.out.println("please enter insert amount you would like to deposit into the machine: ");
+			int userDepositAmount = sc.nextInt();
+
+			if (userDepositAmount < 0) {
+				System.out.println("The bills inserted were rejected!");
+				return false;
+			}
+
+			sql = "INSERT INTO accounts(balance, fk_user_id, fk_customer_id) VALUES(?,?,?)";
+
+			try {
+				Connection connection = connectionFactory.getConnection();
+
+				ps = connection.prepareStatement(sql);
+				ps.setInt(1, userDepositAmount);
+				ps.setInt(2, user.getUserId());
+				ps.setInt(3, customer.getCustomerId());
+				ps.execute();
+
+			} catch (SQLException e) {
+				e.printStackTrace();
+			}
+
+			System.out.println(userDepositAmount + " dollars have been added to your account.");
+
+		} else {
+
+			System.out.println("You must login before you can make a deposit!");
+		}
+
+		return success;
+	}
 
 	@Override
 	public boolean deposit() {
-		return false;
-		// TODO Auto-generated method stub
+		boolean success = false;
+		
+		if(login()) {
+			
+			System.out.println("please enter insert amount you would like to deposit into the machine: ");
+			int userDepositAmount = sc.nextInt();
+			
+			if(userDepositAmount < 0) {
+				System.out.println("The bills inserted were rejected!");
+				return false;
+			}
+			
+			sql = "INSERT INTO accounts(balance, fk_user_id, fk_customer_id) VALUES(?,?,?)";
+			
+			try {
+				Connection connection = connectionFactory.getConnection();
+				
+				ps = connection.prepareStatement(sql);
+				ps.setInt(1, userDepositAmount);
+				ps.setInt(2, user.getUserId());
+				ps.setInt(3,  customer.getCustomerId());
+				ps.execute();
+				
+			}catch(SQLException e) {
+				e.printStackTrace();
+			}
+			
+			System.out.println(userDepositAmount + " dollars have been added to your account.");
+
+		}else {
+			
+			System.out.println("You must login before you can make a deposit!");
+		}
+		
+		return success;
+		
 		
 	}
 

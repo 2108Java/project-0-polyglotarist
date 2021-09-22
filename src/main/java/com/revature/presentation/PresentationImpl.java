@@ -14,12 +14,12 @@ public class PresentationImpl implements PresentationInterface{
 	Customer customer = new Customer();
 	Employee employee = new Employee();
 	
-	
-	private Authenticator auth;
-	
-	public PresentationImpl(Authenticator auth) {
-		this.auth = auth;
-	}
+//	
+//	private Authenticator auth;
+//	
+//	public PresentationImpl(Authenticator auth) {
+//		this.auth = auth;
+//	}
 	
 	public PresentationImpl() {
 		// TODO Auto-generated constructor stub
@@ -70,13 +70,12 @@ public class PresentationImpl implements PresentationInterface{
 			customer.logout();
 
 		default:
+			System.out.println("That is not a valid input.");
 			break;
 					
 		}
 		
 		display();
-		
-		
 //		System.out.println("please register your account:");
 //		customer.register();
 //		customer.logout();
