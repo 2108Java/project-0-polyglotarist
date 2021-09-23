@@ -338,8 +338,36 @@ public class Customer implements CustomerInterface{
 
 	@Override
 	public boolean withdraw() {
-		return false;
-		// TODO Auto-generated method stub
+		
+		System.out.println("Enter amount to withdraw: ");
+		int withdrawAmount = sc.nextInt();
+		
+		if(withdrawAmount < 0) {
+			System.out.println("transaction rejected. Entry cannot be negative.");
+			return false;
+		}
+		
+		currentBalance -= withdrawAmount;
+		
+		//update the database with new balance:
+		
+		sql = "UPDATE accounts SET balance = ? WHERE fk_customer_id = ?";
+		
+		try {
+			Connection connection = connectionFactory.getConnection();
+			ps = connection.prepareStatement(sql);
+			ps.setInt(1, currentBalance);
+			ps.setInt(2, currentCustomerObjectId);
+			ps.execute();
+					
+		}catch(SQLException e) {
+			e.printStackTrace();
+		}
+		
+		System.out.println(withdrawAmount +" dollars have been withdrawn from your account. "
+				+ "your remaining balance is: "+ currentBalance);
+		return true;
+		
 		
 	}
 	
@@ -402,36 +430,7 @@ public class Customer implements CustomerInterface{
 	@Override
 	public boolean deposit() {
 		
-		//first we get the old balance 
-		
-//        sql = "SELECT * FROM accounts WHERE fk_customer_id = ? ";
-//		
-//		try{
-//			Connection connection = connectionFactory.getConnection();
-//			ps = connection.prepareStatement(sql);
-//			
-//			ps.setInt(1, currentCustomerObjectId);
-//			
-//		    ResultSet rs = ps.executeQuery();
-//		    
-//			while(rs.next()) {
-//				account = new AccountClass(
-//					rs.getInt("balance"),
-//					rs.getInt("fk_user_id"),
-//					rs.getInt("fk_customer_id")
-//				);
-//			}
-//			
-//			currentBalance += account.getBalance();
-////			System.out.println(account.getBalance());
-////			int oldBalance = account.getBalance();
-//
-//		}catch(SQLException e) {
-//			e.printStackTrace();
-//		}
-		
-		
-		//then we prompt user to make a deposit to add to old balance.
+		//we prompt user to make a deposit to add to old balance.
 		boolean success = false;
 		
 		System.out.println("please enter insert amount you would like to deposit into the machine: ");
@@ -466,40 +465,6 @@ public class Customer implements CustomerInterface{
 		
 		
 	}
-	
-	//helper method that gets balance from database by customer id:
-	
-//	public int getOldBalance() {
-//		
-//		int oldBalance = 0;
-//        sql = "SELECT * FROM accounts WHERE fk_customer_id = ? ";
-//		
-//		try{
-//			Connection connection = connectionFactory.getConnection();
-//			ps = connection.prepareStatement(sql);
-//			
-//			ps.setInt(1, currentCustomerObjectId);
-//			
-//		    ResultSet rs = ps.executeQuery();
-//		    
-//			while(rs.next()) {
-//				account = new AccountClass(
-//					rs.getInt("balance"),
-//					rs.getInt("fk_user_id"),
-//					rs.getInt("fk_customer_id")
-//				);
-//			}
-//			
-//			oldBalance = account.getBalance();
-////			System.out.println(account.getBalance());
-////			int oldBalance = account.getBalance();
-//
-//		}catch(SQLException e) {
-//			e.printStackTrace();
-//		}
-//		System.out.println("the old balance is : " + oldBalance);
-//		return oldBalance;
-//	}
 
 	@Override
 	public boolean transfer() {
