@@ -33,7 +33,7 @@ public class Customer implements CustomerInterface{
 	PreparedStatement ps;
 	User user = new User();
 	AccountClass account = new AccountClass();
-	
+	int currentBalance = 0;
 	
 	//default constructor:
 	
@@ -333,7 +333,7 @@ public class Customer implements CustomerInterface{
 	@Override
 	public void viewBalance() {
 		
-		System.out.println("Your current balance is: " + getOldBalance());
+		System.out.println("Your current balance is: " + currentBalance );
 	}
 
 	@Override
@@ -349,7 +349,7 @@ public class Customer implements CustomerInterface{
 		
 		System.out.println("please enter insert amount you would like to deposit into the machine: ");
 		int userDepositAmount = sc.nextInt();
-
+		currentBalance += userDepositAmount;
 		if (userDepositAmount < 0) {
 			System.out.println("The bills inserted were rejected!");
 			
@@ -401,6 +401,37 @@ public class Customer implements CustomerInterface{
 
 	@Override
 	public boolean deposit() {
+		
+		//first we get the old balance 
+		
+//        sql = "SELECT * FROM accounts WHERE fk_customer_id = ? ";
+//		
+//		try{
+//			Connection connection = connectionFactory.getConnection();
+//			ps = connection.prepareStatement(sql);
+//			
+//			ps.setInt(1, currentCustomerObjectId);
+//			
+//		    ResultSet rs = ps.executeQuery();
+//		    
+//			while(rs.next()) {
+//				account = new AccountClass(
+//					rs.getInt("balance"),
+//					rs.getInt("fk_user_id"),
+//					rs.getInt("fk_customer_id")
+//				);
+//			}
+//			
+//			currentBalance += account.getBalance();
+////			System.out.println(account.getBalance());
+////			int oldBalance = account.getBalance();
+//
+//		}catch(SQLException e) {
+//			e.printStackTrace();
+//		}
+		
+		
+		//then we prompt user to make a deposit to add to old balance.
 		boolean success = false;
 		
 		System.out.println("please enter insert amount you would like to deposit into the machine: ");
@@ -411,15 +442,17 @@ public class Customer implements CustomerInterface{
 			return false;
 		}
 		
-		sql = "UPDATE accounts SET balance = ? WHERE fk_customer_id = currentCustomerObjectId";
+		currentBalance += userDepositAmount;
+		
+		sql = "UPDATE accounts SET balance = ? WHERE fk_customer_id = ?";
 		
 		try {
 			Connection connection = connectionFactory.getConnection();
 			
 			ps = connection.prepareStatement(sql);
-			ps.setInt(1, userDepositAmount + this.getOldBalance());
+			ps.setInt(1, currentBalance);
 //			ps.setInt(2, user.getUserId());
-//			ps.setInt(2, currentCustomerObjectId);
+			ps.setInt(2, currentCustomerObjectId);
 			ps.execute();
 			
 			
@@ -436,37 +469,37 @@ public class Customer implements CustomerInterface{
 	
 	//helper method that gets balance from database by customer id:
 	
-	public int getOldBalance() {
-		
-		int oldBalance = 0;
-        sql = "SELECT * FROM accounts WHERE fk_customer_id = ? ";
-		
-		try{
-			Connection connection = connectionFactory.getConnection();
-			ps = connection.prepareStatement(sql);
-			
-			ps.setInt(1, currentCustomerObjectId);
-			
-		    ResultSet rs = ps.executeQuery();
-		    
-			while(rs.next()) {
-				account = new AccountClass(
-					rs.getInt("balance"),
-					rs.getInt("fk_user_id"),
-					rs.getInt("fk_customer_id")
-				);
-			}
-			
-			oldBalance = account.getBalance();
-//			System.out.println(account.getBalance());
-//			int oldBalance = account.getBalance();
-
-		}catch(SQLException e) {
-			e.printStackTrace();
-		}
-		System.out.println("the old balance is : " + oldBalance);
-		return oldBalance;
-	}
+//	public int getOldBalance() {
+//		
+//		int oldBalance = 0;
+//        sql = "SELECT * FROM accounts WHERE fk_customer_id = ? ";
+//		
+//		try{
+//			Connection connection = connectionFactory.getConnection();
+//			ps = connection.prepareStatement(sql);
+//			
+//			ps.setInt(1, currentCustomerObjectId);
+//			
+//		    ResultSet rs = ps.executeQuery();
+//		    
+//			while(rs.next()) {
+//				account = new AccountClass(
+//					rs.getInt("balance"),
+//					rs.getInt("fk_user_id"),
+//					rs.getInt("fk_customer_id")
+//				);
+//			}
+//			
+//			oldBalance = account.getBalance();
+////			System.out.println(account.getBalance());
+////			int oldBalance = account.getBalance();
+//
+//		}catch(SQLException e) {
+//			e.printStackTrace();
+//		}
+//		System.out.println("the old balance is : " + oldBalance);
+//		return oldBalance;
+//	}
 
 	@Override
 	public boolean transfer() {
