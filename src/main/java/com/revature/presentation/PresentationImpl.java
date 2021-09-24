@@ -41,7 +41,9 @@ public class PresentationImpl implements PresentationInterface{
 		System.out.println("3) Log in");
 		System.out.println("4) make a deposit");
 		System.out.println("5) view account balance");
-		System.out.println("6) widthraw");
+		System.out.println("6) withdraw");
+		System.out.println("7) make a transfer");
+		System.out.println("8) accept a transfer");
 		System.out.println("0) Logout");
 		
 		Scanner sc = new Scanner(System.in);
@@ -65,6 +67,12 @@ public class PresentationImpl implements PresentationInterface{
 			break;
 		case "6":
 			customer.withdraw();
+			break;
+		case "7":
+			customer.transfer();
+			break;
+		case "8":
+			customer.acceptTransfer();
 			break;
 		case "0":
 			customer.logout();

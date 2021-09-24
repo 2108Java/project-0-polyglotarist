@@ -20,7 +20,7 @@ public interface CustomerInterface {
 	
 	public boolean transfer();
 	
-	public void acceptTransfer();
+	public boolean acceptTransfer();
 	
 	
 }

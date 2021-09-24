@@ -35,16 +35,8 @@ public class Customer implements CustomerInterface{
 	AccountClass account = new AccountClass();
 	int currentBalance = 0;
 	
-	//default constructor:
+	boolean trigger = false;// signals acceptTransfer() method that there is a transfer pending.
 	
-//	public Customer() {
-//		this.customer_id = 0;
-//		this.firstname = "";
-//		this.lastname = "";
-//		this.email = "";
-//		this.phone = "";
-//	}
-	//parameterized constructor:
 	public Customer(int customer_id, String firstname, String lastname, String email, String phone) {
 //		super();
 		this.customer_id = customer_id;
@@ -55,7 +47,6 @@ public class Customer implements CustomerInterface{
 		
 	}
 	
-//	Customer customer = new Customer();
 	
 	public int getCustomerId() {
 		return customer_id;
@@ -150,10 +141,6 @@ public class Customer implements CustomerInterface{
 			e.printStackTrace();
 		}
 		
-		
-		
-//		employee.processApplication(email);
-		
 		//create a customer Object using info from database:
 		
 		sql = "SELECT * FROM customers WHERE email = ?";
@@ -188,32 +175,15 @@ public class Customer implements CustomerInterface{
 			
 			e.printStackTrace();
 		}
-		
-		
-		
-//		if(employeeApproval) {
-//			System.out.println("Congratulations! Your application is approved.");
-//		}else {
-//			System.out.println("Sorry, your application is denied.");
-//		}
-		
-	}
 
 	@Override
 	public void register() {
-		// TODO Auto-generated method stub
-		
-//		User user = new User();
-//		AccountClass account = new AccountClass();
 
 		System.out.println("Please choose a username");
 		String usernameInput = sc.nextLine();
 		
 		System.out.println("Please type a password: ");
 		String passwordInput = sc.nextLine();
-		
-		
-//		System.out.println(user.getUsername());
 		
 		//save info into users table:
 		sql = "INSERT INTO users(username, password) VALUES(?,?)";
@@ -227,9 +197,6 @@ public class Customer implements CustomerInterface{
 			
 			
 			ps.execute();
-			
-//			user = new User(usernameInput, passwordInput);
-//			System.out.println("currentUerId is : " + user.getUserId());
 
 		}catch(SQLException e) {
 			e.printStackTrace();
@@ -272,8 +239,6 @@ public class Customer implements CustomerInterface{
 
 	@Override
 	public boolean login() {
-//		System.out.println("the current object customer_id is: "+ currentCustomerObjectId);
-
 		
 		boolean success = false;
 		
@@ -465,36 +430,69 @@ public class Customer implements CustomerInterface{
 		
 		
 	}
+	
+	
 
 	@Override
 	public boolean transfer() {
-		return false;
-		// TODO Auto-generated method stub
+		
+		trigger = true;
+		boolean success = false;
+		
+		if(acceptTransfer()) {
+			System.out.println("Please enter receiver's email: ");
+			String receiverEmail = sc.nextLine();
+			System.out.println("Please enter the amount you would like to transfer: ");
+			int transferAmount = sc.nextInt();
+			
+			//withdraw from sender:
+			sql = "UPDATE accounts SET balance = ? WHERE fk_customer_id = ?";
+			
+			try {
+				Connection connection = connectionFactory.getConnection();
+				ps = connection.prepareStatement(sql);
+				ps.setInt(1, transferAmount);
+				ps.setInt(2,  currentCustomerObjectId);
+				ps.execute();
+				
+			}catch(SQLException e){
+				e.printStackTrace();
+			}
+			
+			//deposit to receiver
+			sql = "UPDATE accounts SET balance = ? WHERE email = ?";
+			try {
+				Connection connection = connectionFactory.getConnection();
+				ps = connection.prepareStatement(sql);
+				ps.setInt(1, transferAmount);
+				ps.setString(2,  receiverEmail);
+				
+				ps.execute();
+				
+			}catch(SQLException e) {
+				e.printStackTrace();
+			}
+			
+		}
+		
+		return success;
 		
 	}
 
 	@Override
-	public void acceptTransfer() {
-		// TODO Auto-generated method stub
-		
+	public boolean acceptTransfer() {
+		boolean success = false;
+		if(trigger) {
+			success = true;
+		}	
+		return success;
 	}
 
 	public List<Customer> selectAtivitiesByUserId(int id) {
-		// TODO Auto-generated method stub
 		
 		String sql = "SELECT * FROM customers_table WHERE fk_user_id = ?";
 		List<Customer> customerTransactions = new ArrayList<>();
-//		try {
-//			
-//			ConnectionFactory connection;
-//				connection = ConnectionFactory.getConnection();
-//			
-//			}
-//			PreparedStatement ps = connection.prepareStatement(sql);
-//		}catch(SQLException e) {
-//			e.printStackTrace();
-//		}
-		
+
 		return null;
 	}
 
