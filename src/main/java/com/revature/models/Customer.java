@@ -141,7 +141,8 @@ public class Customer implements CustomerInterface{
 			e.printStackTrace();
 		}
 		
-		//create a customer Object using info from database:
+		
+
 		
 		sql = "SELECT * FROM customers WHERE email = ?";
 		
@@ -175,6 +176,7 @@ public class Customer implements CustomerInterface{
 			
 			e.printStackTrace();
 		}
+	}
 
 	@Override
 	public void register() {

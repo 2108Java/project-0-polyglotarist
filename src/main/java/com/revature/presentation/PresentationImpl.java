@@ -1,25 +1,25 @@
 package com.revature.presentation;
 
-import com.revature.service.Authenticator;
-import com.revature.service.AuthenticatorImpl;
-
 import java.util.Scanner;
 
+import org.apache.log4j.Logger;
+
+import com.revature.MainDriver;
 import com.revature.models.Customer;
 import com.revature.models.Employee;
-import com.revature.models.User;
+import org.apache.log4j.Logger;
 
 public class PresentationImpl implements PresentationInterface{
+	
+	
+	
 	
 	Customer customer = new Customer();
 	Employee employee = new Employee();
 	
-//	
-//	private Authenticator auth;
-//	
-//	public PresentationImpl(Authenticator auth) {
-//		this.auth = auth;
-//	}
+	
+	private static final Logger loggy = Logger.getLogger(PresentationImpl.class);
+
 	
 	public PresentationImpl() {
 		// TODO Auto-generated constructor stub
@@ -51,30 +51,39 @@ public class PresentationImpl implements PresentationInterface{
 		
 		switch(userInput) {
 		case "1":
+			loggy.info("User selected 1");
 			customer.applyForAccount();
 			break;
 		case "2":
 			customer.register();
 			break;
 		case "3":
+			loggy.info("User selected 3");
 			customer.login();
 			break;
 		case "4":
+			loggy.info("User selected 4");
 			customer.deposit();
 			break;
 		case "5":
+			loggy.info("User selected 5");
 			customer.viewBalance();
 			break;
 		case "6":
+			loggy.info("User selected 6");
 			customer.withdraw();
 			break;
+			
 		case "7":
+			loggy.info("User selected 7");
 			customer.transfer();
 			break;
 		case "8":
+			loggy.info("User selected 8");
 			customer.acceptTransfer();
 			break;
 		case "0":
+			loggy.info("User selected 0");
 			customer.logout();
 
 		default:
@@ -84,14 +93,7 @@ public class PresentationImpl implements PresentationInterface{
 		}
 		
 		display();
-//		System.out.println("please register your account:");
-//		customer.register();
-//		customer.logout();
-//		customer.viewBalance();
-//		customer.deposit(100);
-//		customer.withdraw(50);
-//		
-		
+				
 	}
 	
 	
